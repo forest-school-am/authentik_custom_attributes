@@ -4,10 +4,18 @@ use serde_json::Value;
 
 pub type RawAttrs = HashMap<String, Value>;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct LoginAccount {
-    pub kind: String,
-    pub address: String,
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+pub struct UserLogins {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub google: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub telegram: Option<String>,
+}
+
+impl UserLogins {
+    pub fn is_empty(&self) -> bool {
+        self.google.is_none() && self.telegram.is_none()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
@@ -27,8 +35,8 @@ pub struct ForestSchoolGroup {
 /// forest_school sub-object as it appears on user attributes.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct ForestSchoolUser {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub logins: Vec<LoginAccount>,
+    #[serde(default, skip_serializing_if = "UserLogins::is_empty")]
+    pub logins: UserLogins,
     #[serde(default, rename = "user-defined", skip_serializing_if = "HashMap::is_empty")]
     pub user_defined: HashMap<String, String>,
     /// Set to true after the user exercises their one-time display-name change.
