@@ -31,6 +31,10 @@ pub struct ForestSchoolUser {
     pub logins: Vec<LoginAccount>,
     #[serde(default, rename = "user-defined", skip_serializing_if = "HashMap::is_empty")]
     pub user_defined: HashMap<String, String>,
+    /// Set to true after the user exercises their one-time display-name change.
+    /// Superusers can reset this via the toggle-freeze endpoint.
+    #[serde(default)]
+    pub name_frozen: bool,
     #[serde(flatten)]
     pub other: HashMap<String, Value>,
 }
